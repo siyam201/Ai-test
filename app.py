@@ -4,19 +4,23 @@ import torch
 
 app = Flask(__name__)
 
-# GPT-2 মডেল লোড করা  
-model_name = "gpt2"  
+# **GPT-2 এর পরিবর্তে হালকা মডেল লোড করুন (DistilGPT-2)**
+model_name = "distilgpt2"  
 model = AutoModelForCausalLM.from_pretrained(model_name)  
 tokenizer = AutoTokenizer.from_pretrained(model_name)  
 
-# চ্যাটবট ফাংশন  
+# **চ্যাটবট ফাংশন**
 def chatbot(prompt):  
     inputs = tokenizer(prompt, return_tensors="pt")  
-    outputs = model.generate(**inputs, max_length=100, pad_token_id=tokenizer.eos_token_id)  
+    outputs = model.generate(
+        **inputs,  
+        max_length=100,  
+        eos_token_id=tokenizer.eos_token_id
+    )  
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)  
     return response  
 
-# **HTML ফাইল রেন্ডার করা (ফ্রন্টএন্ড)**
+# **ফ্রন্টএন্ড HTML রেন্ডার করা**
 @app.route("/")
 def home():
     return """<!DOCTYPE html>
